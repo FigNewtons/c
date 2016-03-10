@@ -5,11 +5,10 @@
 
 main() {
 
-    
     char filename[50], line[100], *token;
     FILE *f;
     
-    int width, buffer = 100, invalid = 0, newline = 0;
+    int width, invalid = 0, newline = 0;
 
     do {
         printf("Enter the path to the text file you want to justify:\n");
@@ -28,7 +27,6 @@ main() {
         }
 
     }while(invalid);
-
 
     f = fopen(filename, "r");
     
