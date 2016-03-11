@@ -2,6 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*      queue.h
+ *
+ *      Author: Daniel Gruszczynski
+ *      Date: March 16, 2016
+ *
+ *      Queue (linked-list) implementation to store
+ *      word tokens. The code is pretty self-explanatory.
+ */
+
 typedef struct Node Node;
 struct Node {
     char *word;

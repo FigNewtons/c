@@ -4,6 +4,17 @@
 #include <string.h>
 #include <unistd.h>
 
+/*      justify.c
+ *
+ *      Author: Daniel Gruszczynski
+ *      Date: March 16, 2016
+ *
+ *      Given a valid file name (plaintext) and the number of
+ *      characters per line (between 40 and 100, inclusive), 
+ *      output a text-justified version of the original file's
+ *      contents.
+ */
+
 
 Queue * tokenize(char filename[]);
 void justify(Queue *, int);
@@ -39,6 +50,10 @@ main() {
  }
 
 
+/* Given a string (path to the file name), return a pointer
+ * to a queue containing word tokens parsed from the file's
+ * contents. 
+ */
 Queue * tokenize(char filename[]){
 
     Queue *q;
@@ -49,6 +64,11 @@ Queue * tokenize(char filename[]){
     q = createQueue();
     f = fopen(filename, "r");
 
+    /* Read file in chunks, then tokenize by tabs
+     * and whitespaces. We strip new lines and demarcate 
+     * paragraphs by enqueuing "\n\n" as a separator. 
+     * This means we can use one queue for the entire file. 
+     */
     while(fgets(line, 100, f) != NULL){
         token = strtok(line, " \t");
         
@@ -56,10 +76,11 @@ Queue * tokenize(char filename[]){
 
             if(!strcmp(token, "\n")) newline++;
             else {
+
                 /* Strip trailing newline from token */ 
                 token[strcspn(token, "\r\n")] = 0; 
 
-                if(newline >= 2){ 
+                if(newline >= 1){ 
                     newline = 0;
                     enqueue(q, "\n\n");
                 }
@@ -77,7 +98,7 @@ Queue * tokenize(char filename[]){
     return q;
 }
 
-
+/* Formats the text using queue tokens and line width (no. of characters) */
 void justify(Queue *text, int width){
 
     char *buffer[50], *word;
@@ -92,15 +113,19 @@ void justify(Queue *text, int width){
 
         word = peek(text);
 
+        /* If the token is not paragraph separator */
         if(strcmp(word, "\n\n")){ 
-       
+      
+            /* Spacing is done to the left of the word */
             padding = wordcount? strlen(word) + 1 : strlen(word);
 
+            /* Line hasn't reached max capacity */
             if(spaceleft >= padding){
                 buffer[wordcount++] = dequeue(text);
                 spaceleft -= padding;
             }else {
 
+                /* Evenly distribute the spaces left */
                 additional = spaceleft / (wordcount - 1);
                 remain = spaceleft % (wordcount - 1);
 
@@ -115,7 +140,6 @@ void justify(Queue *text, int width){
                     }   
                 
                     for(j = 0; j < spacing; j++) printf(" ");
-
                     printf("%s", buffer[i]);
                 }
                 printf("\n");
@@ -127,28 +151,14 @@ void justify(Queue *text, int width){
 
         }else {
 
+            /* Last line in paragraph. Empty the buffer before 
+             * printing two newlines
+             */
             if(wordcount){
-                additional = spaceleft / (wordcount - 1);
-                remain = spaceleft % (wordcount - 1);
-
-                printf("%s", buffer[0]);
-                for(i = 1; i < wordcount; i++){
-
-                    spacing = additional + 1;
-
-                    if(remain){
-                        spacing++;
-                        remain--;
-                    }
-                    for(j = 0; j < spacing; j++) printf(" ");
-
-                    printf("%s", buffer[i]);
-                }
-                printf("\n");
+                for(i = 0; i < wordcount; i++) printf("%s ", buffer[i]);
                 
                 spaceleft = width;
                 wordcount = 0;
-
             }
             printf("\n\n");
             dequeue(text);
@@ -156,8 +166,11 @@ void justify(Queue *text, int width){
         }
     }
 
+    /* Print last line of file */
     for(i = 0; i < wordcount; i++) printf("%s ", buffer[i]);
     printf("\n");
+
+    deleteQueue(text);
 }
 
 
