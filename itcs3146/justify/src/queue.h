@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 typedef struct Node Node;
 struct Node {
@@ -18,6 +18,7 @@ struct Queue {
 
 Queue * createQueue(void);
 void deleteQueue(Queue *);
+void printQueue(Queue *);
 
 void enqueue(Queue *, char *);
 char* dequeue(Queue *);
@@ -25,28 +26,7 @@ char* dequeue(Queue *);
 char* peek(Queue *);
 int isEmpty(Queue *);
 int length(Queue *);
-void print(Queue *);
 
-
-main() {
-
-    Queue *q = createQueue();
-
-    if(isEmpty(q))
-       printf("Queue is empty\n"); 
-
-    enqueue(q, "lol");
-    enqueue(q, "penis");
-    enqueue(q, "hello");
-    enqueue(q, "bye");
-    dequeue(q);
-    dequeue(q);
-
-    print(q);
-
-    deleteQueue(q);
-
-}
 
 Queue *createQueue(){
     Queue *q = malloc(sizeof(Queue));
@@ -60,14 +40,34 @@ void deleteQueue(Queue *q){
     free(q);
 }
 
+void printQueue(Queue *q){
+
+    if(!isEmpty(q)){
+
+        printf("Queue length: %d\n", length(q));
+
+        Node *current;
+        current = q -> front;
+
+        do {
+            printf("Item: %s\n", current -> word);
+            current = current -> next;
+        }while(current != NULL);
+    }
+}
+
 void enqueue(Queue *q, char *w){
 
     Node *item;
+    char *temp;
 
     item = malloc(sizeof(Node));
-    
-    if(item != NULL){
-        item -> word = w;
+    temp = malloc(sizeof(w));
+
+    strcpy(temp, w);
+
+    if(item != NULL || temp != NULL){
+        item -> word = temp;
         item -> next = NULL;
 
         if(isEmpty(q)){
@@ -114,18 +114,3 @@ int length(Queue *q){
     return  q -> length;
 }
 
-void print(Queue *q){
-
-    if(!isEmpty(q)){
-
-        printf("Stack length: %d\n", length(q));
-
-        Node *current;
-        current = q -> front;
-
-        do {
-            printf("Item: %s\n", current -> word);
-            current = current -> next;
-        }while(current != NULL);
-    }
-}

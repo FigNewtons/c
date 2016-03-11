@@ -1,6 +1,10 @@
     this is to          test
-tabs and other   anomalies.
+tabs and other   anomalies. we shall see.
 
 
 also,   paragraphs and      stuff
 mmmmmkay?
+
+
+this is    a       longer  p@r@Gr4ph  and so this     one
+should be justified     as    expected,     duh.
