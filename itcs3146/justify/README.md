@@ -40,11 +40,9 @@ Design choices
     is  what's  referenced  by the node; this gives the queue full control over
     its internal state. 
 
-    I  chose  to  read  the  file line by line as opposed to one character at a
-    time.  This  allowed  me  to use strtok() on tabs and whitespaces. The only
-    tricky  part  was  stripping  the trailing newline on the last token of the
-    current  line.  For counting purposes, this means that if the next token is
-    just "\n", then this is a new paragraph. 
+    I  chose  to  read  the  file  in  1000  character blocks as opposed to one 
+    character  at  a  time. This  allowed  me  to  use  strtok()  on  tabs  and 
+    whitespaces without much hassle.
 
     Combining  the above comments, I chose to use a single queue for the entire
     file. This turned out to be ideal for two reasons: 

@@ -58,7 +58,7 @@ Queue * tokenize(char filename[]){
 
     Queue *q;
     FILE  *f;
-    char line[100], *token;
+    char line[1000], *token;
     int newline = 0;
 
     q = createQueue();
@@ -69,28 +69,30 @@ Queue * tokenize(char filename[]){
      * paragraphs by enqueuing "\n\n" as a separator. 
      * This means we can use one queue for the entire file. 
      */
-    while(fgets(line, 100, f) != NULL){
+    while(fgets(line, 1000, f) != NULL){
         token = strtok(line, " \t");
         
         while(token != NULL){
 
-            if(!strcmp(token, "\n")) newline++;
-            else {
+            if(strchr(token, '\n') != NULL){ 
 
                 /* Strip trailing newline from token */ 
-                token[strcspn(token, "\r\n")] = 0; 
+                token[strcspn(token, "\r\n")] = 0;
 
-                if(newline >= 1){ 
-                    newline = 0;
-                    enqueue(q, "\n\n");
-                }
-                    
+                if(strcmp(token, "")) enqueue(q, token);
+                
+                newline++;
+
+            }else {
+
+                if(newline >= 2) enqueue(q, "\n\n");
+
                 enqueue(q, token);
+                newline = 0;
             }
 
             token = strtok(NULL, " \t");
         }
-
     }
 
     fclose(f);
